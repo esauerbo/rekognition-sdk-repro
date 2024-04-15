@@ -8,7 +8,7 @@ import {
   StartFaceLivenessSessionCommand,
 } from "@aws-sdk/client-rekognitionstreaming";
 
-import { CustomWebSocketFetchHandler } from "./CustomWebsocketFetchHandler";
+import { WebSocketFetchHandler } from "@aws-sdk/middleware-websocket";
 import { getAsyncGeneratorFromReadableStream } from "./getAsyncGenerator";
 import { VideoRecorder } from "./videoRecorder";
 
@@ -40,7 +40,7 @@ async function startSession(sessionId: string, stream: MediaStream) {
     const client = new RekognitionStreamingClient({
       credentials,
       region,
-      requestHandler: new CustomWebSocketFetchHandler({
+      requestHandler: new WebSocketFetchHandler({
         connectionTimeout: CONNECTION_TIMEOUT,
       }),
     });

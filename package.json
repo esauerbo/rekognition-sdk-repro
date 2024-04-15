@@ -13,7 +13,8 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
-    "@aws-sdk/client-rekognition": "^3.540.0",
-    "@aws-sdk/client-rekognitionstreaming": "^3.398.0"
+    "@aws-sdk/client-rekognition": "latest",
+    "@aws-sdk/client-rekognitionstreaming": "latest",
+    "@aws-sdk/middleware-websocket": "latest"
   }
 }
