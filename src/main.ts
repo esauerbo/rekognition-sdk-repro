@@ -8,16 +8,13 @@ import {
   StartFaceLivenessSessionCommand,
 } from "@aws-sdk/client-rekognitionstreaming";
 
-import { WebSocketFetchHandler } from "@aws-sdk/middleware-websocket";
 import { getAsyncGeneratorFromReadableStream } from "./getAsyncGenerator";
 import { VideoRecorder } from "./videoRecorder";
 
 const credentials = JSON.parse(import.meta.env.VITE_CREDENTIALS);
-const CONNECTION_TIMEOUT = 10_000;
 const region = "us-east-1";
 
 async function createSession() {
-  console.log("Creating session...");
   try {
     const client = new RekognitionClient({
       region,
@@ -35,14 +32,10 @@ async function createSession() {
 }
 
 async function startSession(sessionId: string, stream: MediaStream) {
-  console.log("Starting session...");
   try {
     const client = new RekognitionStreamingClient({
       credentials,
       region,
-      requestHandler: new WebSocketFetchHandler({
-        connectionTimeout: CONNECTION_TIMEOUT,
-      }),
       systemClockOffset: -3600000,
     });
 
