@@ -17,7 +17,7 @@ const CONNECTION_TIMEOUT = 10_000;
 const region = "us-east-1";
 
 async function createSession() {
-  console.log("Creating session...")
+  console.log("Creating session...");
   try {
     const client = new RekognitionClient({
       region,
@@ -30,12 +30,12 @@ async function createSession() {
     return sessionId;
   } catch (error) {
     console.error(error);
-    throw new Error('Unable to create session');
+    throw new Error("Unable to create session");
   }
 }
 
 async function startSession(sessionId: string, stream: MediaStream) {
-  console.log("Starting session...")
+  console.log("Starting session...");
   try {
     const client = new RekognitionStreamingClient({
       credentials,
@@ -43,6 +43,7 @@ async function startSession(sessionId: string, stream: MediaStream) {
       requestHandler: new WebSocketFetchHandler({
         connectionTimeout: CONNECTION_TIMEOUT,
       }),
+      systemClockOffset: -3600000,
     });
 
     const videoRecorder = new VideoRecorder(stream);
@@ -60,10 +61,11 @@ async function startSession(sessionId: string, stream: MediaStream) {
       })
     );
     console.log(response);
+    videoRecorder.start(1000);
     return response;
   } catch (error) {
-    console.error(error)
-    throw new Error('Unable to start session');
+    console.error(error);
+    throw new Error("Unable to start session");
   }
 }
 
@@ -78,10 +80,10 @@ async function createVideoAndGetStream(): Promise<MediaStream> {
       return mediaStream;
     } catch (error) {
       console.error(error);
-      throw new Error('Unable to access camera');
+      throw new Error("Unable to access camera");
     }
   } else {
-    throw new Error('getUserMedia is not supported');
+    throw new Error("getUserMedia is not supported");
   }
 }
 
@@ -89,19 +91,8 @@ async function main() {
   const videoStream = await createVideoAndGetStream();
 
   const sessionId = await createSession();
-  console.log("Session Created: ", sessionId);
 
-  const response = await startSession(sessionId!, videoStream);
-  const responseStream = response!.LivenessResponseStream;
-  try {
-    const stream = await responseStream;
-    // @ts-ignore
-    for await (const event of stream) {
-      console.log(event);
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  await startSession(sessionId!, videoStream);
 }
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
